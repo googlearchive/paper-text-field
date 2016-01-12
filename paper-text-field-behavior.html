@@ -1,0 +1,173 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../iron-behaviors/iron-control-state.html">
+
+<script>
+  Polymer.PaperTextFieldBehaviorImpl = {
+    properties: {
+      /**
+       * The value for this input.
+       */
+      value: {
+        notify: true,
+        observer: '_valueChanged',
+        type: String
+      },
+
+      /**
+       * The label for this input.
+       */
+      label: {
+        type: String
+      },
+
+      /**
+       * Set to true to disable this input.
+       */
+      disabled: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to disable the floating label.
+       */
+      noFloatLabel: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to always float the label.
+       */
+      alwaysFloatLabel: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    /**
+     * Returns a reference to the input element.
+     */
+    get inputElement() {
+      return this.$.input;
+    },
+
+    listeners: {
+      'focus': '_onFocus'
+    },
+
+    keyBindings: {
+      'shift+tab:keydown': '_onShiftTab'
+    },
+
+    attached: function() {
+      // Float the label correctly if there's an initial value.
+      if (this.value || this.alwaysFloatLabel)
+        this._onInput();
+
+      this._setUpListeners();
+    },
+
+    _setUpListeners: function() {
+      this.inputElement.addEventListener('paste', this._onPaste.bind(this));
+      this.inputElement.addEventListener('input', this._onInput.bind(this));
+      // Never stop being different, IE.
+      this.inputElement.addEventListener('textinput', this._onInput.bind(this));
+    },
+
+    /**
+     * Called when the element is updated because of user interaction.
+     */
+    _onInput: function() {
+      this.value = this.inputElement.textContent;
+
+      if (this.value || this.value === 0 || this.value === false) {
+        this._hasContent = true;
+      } else {
+        this._hasContent = false;
+      }
+    },
+
+    /**
+     * Called after a paste event inside the input element.
+     */
+    _onPaste: function(event) {
+      var pastedText = undefined;
+      if (window.clipboardData && window.clipboardData.getData) { // IE
+        pastedText = window.clipboardData.getData('Text');
+      } else if (event.clipboardData && event.clipboardData.getData) {
+        pastedText = event.clipboardData.getData('text/plain');
+      }
+      // Allow the pasted text and update the labels.
+      this.inputElement.textContent = pastedText;
+      this._onInput();
+      return false; // Prevent the default handler from running.
+    },
+
+    /**
+     * Called when the element is focused. Forwards focus to the input element.
+     */
+    _onFocus: function() {
+      if (!this.disabled && !this._shiftTabPressed){
+        this.inputElement.focus();
+      }
+    },
+
+    /**
+     * Called when a shift+tab keypress is detected.
+     *
+     * @param {CustomEvent} event A key combination event.
+     */
+    _onShiftTab: function(event) {
+      var oldTabIndex = this.getAttribute('tabindex');
+      this._shiftTabPressed = true;
+      this.setAttribute('tabindex', '-1');
+      this.async(function() {
+        this.setAttribute('tabindex', oldTabIndex);
+        this._shiftTabPressed = false;
+      }, 1);
+    },
+
+    /**
+     * Called when the element is programmatically updated.
+     */
+    _valueChanged: function() {
+      // Only update if it's actually different.
+      if (this.inputElement && this.inputElement.textContent !== this.value) {
+        this.inputElement.textContent = this.value;
+      }
+    },
+
+    _computeLabelClass: function(noFloatLabel,alwaysFloatLabel,focused,hasContent) {
+      var cls = '';
+      if (noFloatLabel === true) {
+        return hasContent ? 'label-is-hidden' : '';
+      }
+
+      if (hasContent || alwaysFloatLabel === true) {
+        cls += ' label-is-floating';
+        if (focused) {
+          cls += " label-is-highlighted";
+        }
+      }
+      return cls;
+    },
+
+    _computeUnderlineClass: function(focused) {
+      return focused ? 'is-highlighted' : '';
+    },
+  };
+
+  Polymer.PaperTextFieldBehavior = [Polymer.IronControlState,
+                                    Polymer.PaperTextFieldBehaviorImpl];
+</script>

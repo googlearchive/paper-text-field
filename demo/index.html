@@ -1,0 +1,112 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>paper-text-field demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../paper-text-field.html">
+  <link rel="import" href="../../paper-styles/color.html">
+
+</head>
+
+<style is="custom-style" include="demo-pages-shared-styles">
+  .tiny {
+    width: 50px;
+  }
+  .not-tiny {
+    width: 300px;
+  }
+  .horizontal {
+    @apply(--layout-horizontal);
+  }
+</style>
+<body unresolved>
+  <div class="vertical-section-container centered">
+    <h3>Inputs can have different types, and be disabled</h3>
+    <demo-snippet>
+      <template>
+        <paper-text-field label="text input"></paper-text-field>
+        <paper-text-field label="pre-filled" value="batman"></paper-text-field>
+        <paper-text-field label="disabled input" disabled></paper-text-field>
+      </template>
+    </demo-snippet>
+
+    <h3>The label can have different floating states</h3>
+    <demo-snippet>
+      <template>
+        <paper-text-field label="this label floats after typing"></paper-text-field>
+        <paper-text-field label="this label is always floating" always-float-label></paper-text-field>
+        <paper-text-field label="this label never floats" no-float-label value="this label never floats"></paper-text-field>
+      </template>
+    </demo-snippet>
+
+    <h3>Inputs can be styled with custom properties</h3>
+    <demo-snippet>
+      <style is="custom-style">
+        paper-text-field.fancy {
+          --paper-text-field-color: var(--paper-teal-500);
+          --paper-text-field-focus-color: var(--paper-green-500);
+          --paper-text-field-input-color: var(--paper-pink-500);
+
+          --paper-text-field-input: {
+            font-style: italic;
+          };
+        }
+        paper-text-field.styled-label {
+          --paper-text-field-label-floating: {
+            color: var(--paper-indigo-500);
+            letter-spacing: 2px;
+          };
+          --paper-text-field-label: {
+            color: var(--paper-deep-orange-500);
+          };
+          --paper-text-field-label-focus: {
+            color: var(--paper-deep-orange-500);
+          };
+        }
+        paper-text-field.read-only {
+          --paper-text-field-underline-disabled: {
+            border: none;
+          };
+          --paper-text-field-disabled: {
+            opacity: 0.8;
+          }
+        }
+      </style>
+      <template>
+        <paper-text-field label="custom colors and input" class="fancy"></paper-text-field>
+        <paper-text-field label="custom styled label" class="styled-label"></paper-text-field>
+        <paper-text-field label="non-focusabled, read-only like input" class="read-only" disabled></paper-text-field>
+      </template>
+    </demo-snippet>
+
+    <h3>UI Smoke Tests</h3>
+    <demo-snippet>
+      <template>
+        <paper-text-field label="tiny" class="tiny"></paper-text-field>
+        <paper-text-field label="not tiny" class="not-tiny"></paper-text-field>
+        <div class="horizontal" style="width:300px;">
+          <paper-text-field label="one" class="tiny"></paper-text-field>
+          <paper-text-field label="two" class="tiny"></paper-text-field>
+          <paper-text-field label="three" class="tiny"></paper-text-field>
+        </div>
+      </template>
+    </demo-snippet>
+</body>
+</html>

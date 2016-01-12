@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+
+  <title>paper-text-field tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../paper-text-field.html">
+
+</head>
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <paper-text-field></paper-text-field>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="label">
+    <template>
+      <paper-text-field label="label"></paper-text-field>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="has-value">
+    <template>
+      <paper-text-field value="batman"></paper-text-field>
+    </template>
+  </test-fixture>
+
+  <script>
+
+    suite('basic', function() {
+      var input;
+
+      function textContent() {
+        return input.inputElement.textContent;
+      }
+
+      test('setting the value updates the text content', function() {
+        input = fixture('basic');
+        input.value = 'batman';
+        assert.equal(input.value, textContent(), 'value equals to textContent');
+      });
+
+      test('setting the text content updates the value after _onInput()', function() {
+        input = fixture('basic');
+        input.$.textContent = 'batman';
+        input._onInput();
+        assert.equal(input.value, textContent(), 'value equals to textContent');
+      });
+
+      test('changing the value triggers an event', function(done) {
+        input = fixture('basic');
+        var handler = sinon.spy();
+        input.addEventListener('value-changed', handler);
+
+        Polymer.Base.async(function(){
+          expect(handler.callCount).to.be.equal(1);
+          done();
+        }, 1);
+        input.value = 'batman';
+      });
+
+      test('preset value sets textContent', function() {
+        input = fixture('has-value');
+        assert.equal(input.value, 'batman');
+        assert.equal(input.value, textContent(), 'value equals to textContent');
+      });
+    });
+
+    suite('focus/blur events', function() {
+      var input;
+
+      setup(function() {
+        input = fixture('basic');
+      });
+
+      test('focus an input with tabindex', function(done) {
+        flush(function() {
+          MockInteractions.focus(input);
+          flush(function() {
+            assert.equal(input.shadowRoot ? input.shadowRoot.activeElement :
+                document.activeElement, input.inputElement);
+            done();
+          });
+        });
+      });
+
+      test('focus/blur events fired on host element', function() {
+        var nFocusEvents = 0;
+        var nBlurEvents = 0;
+        input.addEventListener('focus', function(event) {
+          nFocusEvents += 1;
+          assert(input.focused, 'input is focused');
+          MockInteractions.blur(input.inputElement);
+        });
+        input.addEventListener('blur', function() {
+          nBlurEvents += 1;
+          assert(!input.focused, 'input is blurred');
+        });
+        MockInteractions.focus(input.inputElement);
+        assert.isTrue(nFocusEvents >= 1, 'focus event fired');
+        assert.isTrue(nBlurEvents >= 1, 'blur event fired');
+      });
+    });
+
+    a11ySuite('basic');
+    a11ySuite('label');
+    a11ySuite('has-value');
+  </script>
+
+</body>
+</html>

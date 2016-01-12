@@ -1,0 +1,112 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="paper-text-field-shared-styles.html">
+<link rel="import" href="paper-text-field-behavior.html">
+
+<!--
+Material design: [Text fields](https://www.google.com/design/spec/components/text-fields.html)
+
+`<paper-text-field>` is a single-line text field with Material Design styling.
+Unlike `<paper-input>` it does not contain a native `<input>` field, so it cannot
+be used in native forms, or with any of the native `<input>` `type=...` attributes.
+
+    <paper-text-field label="Input label"></paper-text-field>
+
+See `Polymer.PaperTextFieldBehavior` for more API docs.
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+#### Basic colors that are used throughout the element:
+
+Custom property | Description
+----------------|-------------
+`--paper-text-field-color` | Label and underline color when the focus is not focused
+`--paper-text-field-focus-color` | Label and underline color when the input is focused
+`--paper-text-field-input-color` | Input foreground text color
+
+#### To style the host of the element, as a whole:
+
+Custom property | Description
+----------------|-------------
+`--paper-text-field` | Mixin applied to the element in its normal state
+`--paper-text-field-disabled` | Mixin applied to the element when it's disabled
+
+#### To style the input part of the element:
+
+Custom property | Description
+----------------|-------------
+`--paper-text-field-input` | Mixin applied to the just the input field
+
+#### To style the label:
+
+Custom property | Description
+----------------|-------------
+`--paper-text-field-label` | Mixin applied to the label in its normal state
+`--paper-text-field-label-focus` | Mixin applied to the label when the input is focused
+`--paper-text-field-label-floating` | Mixin applied to the label when floating
+
+#### To style the underline:
+
+Custom property | Description
+----------------|-------------
+`--paper-text-field-underline` | Mixin applied to the underline
+`--paper-text-field-underline-focus` | Mixin applied to the underline when the input is focused
+`--paper-text-field-underline-disabled` | Mixin applied to the underline when the input is disabled
+
+This element is `display:block` by default, but you can set the `inline` attribute to make it
+`display:inline-block`.
+
+@group Paper Elements
+@element paper-text-field
+@hero hero.svg
+@demo demo/index.html
+-->
+
+<dom-module id="paper-text-field">
+  <template>
+    <style include="paper-text-field-shared-styles"></style>
+
+    <div class="floated-label-placeholder" hidden$="[[noFloatLabel]]">&nbsp;</div>
+
+    <div class="input-content">
+      <label hidden$="[[!label]]"
+             class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,focused,_hasContent)]]">[[label]]</label>
+      <div id="input"
+          contenteditable="true"
+          tabindex="-1">
+      </div>
+    </div>
+
+    <div class$="underline [[_computeUnderlineClass(focused)]]">
+      <div class="unfocused-line"></div>
+      <div class="focused-line"></div>
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'paper-text-field',
+
+    hostAttributes: {
+      'tabindex': 0,
+      role: 'textbox'
+    },
+
+    behaviors: [
+      Polymer.PaperTextFieldBehavior
+    ],
+  });
+</script>
