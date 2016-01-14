@@ -31,14 +31,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
-       * Set to true to disable this input.
-       */
-      disabled: {
-        type: Boolean,
-        value: false
-      },
-
-      /**
        * Set to true to disable the floating label.
        */
       noFloatLabel: {
@@ -52,6 +44,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       alwaysFloatLabel: {
         type: Boolean,
         value: false
+      },
+
+      /**
+       * True when the input has
+       */
+      hasContent: {
+        type: Boolean,
+        readOnly: true
       }
     },
 
@@ -92,9 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.value = this.inputElement.textContent;
 
       if (this.value || this.value === 0 || this.value === false) {
-        this._hasContent = true;
+        this._setHasContent(true);
       } else {
-        this._hasContent = false;
+        this._setHasContent(false);
       }
     },
 
@@ -111,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Allow the pasted text and update the labels.
       this.inputElement.textContent = pastedText;
       this._onInput();
-      return false; // Prevent the default handler from running.
+      event.preventDefault();
     },
 
     /**
@@ -148,7 +148,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
-    _computeLabelClass: function(noFloatLabel,alwaysFloatLabel,focused,hasContent) {
+    // TODO(noms):  When inheritance is available, investigate if these could
+    // become private methods.
+    _computeLabelClass: function(noFloatLabel, alwaysFloatLabel, focused, hasContent) {
       var cls = '';
       if (noFloatLabel === true) {
         return hasContent ? 'label-is-hidden' : '';

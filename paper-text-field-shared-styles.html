@@ -19,7 +19,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
         padding: 8px 0;
-        @apply(--paper-text-field);
       }
 
       [hidden] {
@@ -28,8 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       :host([disabled]) {
         pointer-events: none;
-        opacity: 0.33;
-        @apply(--paper-text-field-disabled);
+        opacity: var(--paper-text-field-disabled-opacity, 0.33);
       }
 
       /* Restrict div contenteditable */
@@ -75,10 +73,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         transform: scale3d(0,1,1);
         -webkit-transform: scale3d(0,1,1);
 
-        background: var(--paper-text-field-focus-color, --default-primary-color);
+        background: var(--paper-text-field-focus-color, --primary-color);
 
         @apply(--layout-fit);
-        @apply(--paper-text-field-underline-focus);
       }
 
       .underline.is-highlighted .focused-line {
@@ -95,15 +92,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background: var(--paper-text-field-color, --secondary-text-color);
 
         @apply(--layout-fit);
-        @apply(--paper-text-field-underline);
       }
 
       :host([disabled]) .unfocused-line {
-        border-bottom: 1px dashed;
+        border-bottom: var(--paper-text-field-disabled-underline, 1px dashed);
         border-color: var(--paper-text-field-color, --secondary-text-color);
         background: transparent;
-
-        @apply(--paper-text-field-underline-disabled);
       }
 
       /*****************************
@@ -128,7 +122,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-align: inherit;
 
         @apply(--paper-font-subhead);
-        @apply(--paper-text-field-input);
       }
 
       /*****************************
@@ -144,7 +137,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         @apply(--paper-font-common-nowrap);
         @apply(--paper-font-subhead);
-        @apply(--paper-text-field-label);
       }
 
       .input-content label.label-is-floating {
@@ -161,21 +153,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 133%;
 
         @apply(--paper-transition-easing);
-        @apply(--paper-text-field-label-floating);
       }
 
       :host-context([dir="rtl"]) .input-content label.label-is-floating {
-        /* TODO(noms): Figure out why leaving the width at 133% before the animation
-         * actually makes
-         * it wider on the right side, not left side, as you would expect in RTL */
-        width: 100%;
         -webkit-transform-origin: right top;
         transform-origin: right top;
       }
 
       .input-content label.label-is-highlighted {
-        color: var(--paper-text-field-focus-color, --default-primary-color);
-        @apply(--paper-text-field-label-focus);
+        color: var(--paper-text-field-focus-color, --primary-color);
       }
 
       .input-content label.label-is-hidden {

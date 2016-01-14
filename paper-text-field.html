@@ -25,47 +25,15 @@ See `Polymer.PaperTextFieldBehavior` for more API docs.
 
 ### Styling
 
-The following custom properties and mixins are available for styling:
+The following custom properties are available for styling:
 
-#### Basic colors that are used throughout the element:
-
-Custom property | Description
-----------------|-------------
-`--paper-text-field-color` | Label and underline color when the focus is not focused
-`--paper-text-field-focus-color` | Label and underline color when the input is focused
-`--paper-text-field-input-color` | Input foreground text color
-
-#### To style the host of the element, as a whole:
-
-Custom property | Description
-----------------|-------------
-`--paper-text-field` | Mixin applied to the element in its normal state
-`--paper-text-field-disabled` | Mixin applied to the element when it's disabled
-
-#### To style the input part of the element:
-
-Custom property | Description
-----------------|-------------
-`--paper-text-field-input` | Mixin applied to the just the input field
-
-#### To style the label:
-
-Custom property | Description
-----------------|-------------
-`--paper-text-field-label` | Mixin applied to the label in its normal state
-`--paper-text-field-label-focus` | Mixin applied to the label when the input is focused
-`--paper-text-field-label-floating` | Mixin applied to the label when floating
-
-#### To style the underline:
-
-Custom property | Description
-----------------|-------------
-`--paper-text-field-underline` | Mixin applied to the underline
-`--paper-text-field-underline-focus` | Mixin applied to the underline when the input is focused
-`--paper-text-field-underline-disabled` | Mixin applied to the underline when the input is disabled
-
-This element is `display:block` by default, but you can set the `inline` attribute to make it
-`display:inline-block`.
+Custom property | Description | Default
+----------------|-------------|----
+`--paper-text-field-color` | Label and underline color when the focus is not focused | `--secondary-text-color`
+`--paper-text-field-focus-color` | Label and underline color when the input is focused | `--primary-color`
+`--paper-text-field-input-color` | Input foreground text color | `--primary-text-color`
+`--paper-text-field-disabled-opacity` | Opacity of the element when disabled | `0.33`
+`--paper-text-field-disabled-underline` | Border style of the underline when disabled | `1px dashed`
 
 @group Paper Elements
 @element paper-text-field
@@ -81,7 +49,7 @@ This element is `display:block` by default, but you can set the `inline` attribu
 
     <div class="input-content">
       <label hidden$="[[!label]]"
-             class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,focused,_hasContent)]]">[[label]]</label>
+             class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,focused,hasContent)]]">[[label]]</label>
       <div id="input"
           contenteditable="true"
           tabindex="-1">
@@ -102,11 +70,11 @@ This element is `display:block` by default, but you can set the `inline` attribu
 
     hostAttributes: {
       'tabindex': 0,
-      role: 'textbox'
+      'role': 'textbox'
     },
 
     behaviors: [
       Polymer.PaperTextFieldBehavior
-    ],
+    ]
   });
 </script>

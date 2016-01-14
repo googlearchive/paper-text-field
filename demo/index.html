@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <paper-text-field label="this label floats after typing"></paper-text-field>
         <paper-text-field label="this label is always floating" always-float-label></paper-text-field>
-        <paper-text-field label="this label never floats" no-float-label value="this label never floats"></paper-text-field>
+        <paper-text-field label="this label never floats" no-float-label></paper-text-field>
       </template>
     </demo-snippet>
 
@@ -63,35 +63,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           --paper-text-field-color: var(--paper-teal-500);
           --paper-text-field-focus-color: var(--paper-green-500);
           --paper-text-field-input-color: var(--paper-pink-500);
+        }
 
-          --paper-text-field-input: {
-            font-style: italic;
-          };
-        }
-        paper-text-field.styled-label {
-          --paper-text-field-label-floating: {
-            color: var(--paper-indigo-500);
-            letter-spacing: 2px;
-          };
-          --paper-text-field-label: {
-            color: var(--paper-deep-orange-500);
-          };
-          --paper-text-field-label-focus: {
-            color: var(--paper-deep-orange-500);
-          };
-        }
         paper-text-field.read-only {
-          --paper-text-field-underline-disabled: {
-            border: none;
-          };
-          --paper-text-field-disabled: {
-            opacity: 0.8;
-          }
+          --paper-text-field-disabled-opacity: 0.9;
+          --paper-text-field-disabled-underline: none;
         }
       </style>
       <template>
         <paper-text-field label="custom colors and input" class="fancy"></paper-text-field>
-        <paper-text-field label="custom styled label" class="styled-label"></paper-text-field>
         <paper-text-field label="non-focusabled, read-only like input" class="read-only" disabled></paper-text-field>
       </template>
     </demo-snippet>
