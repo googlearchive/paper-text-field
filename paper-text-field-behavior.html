@@ -81,6 +81,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     _setUpListeners: function() {
       this.inputElement.addEventListener('paste', this._onPaste.bind(this));
       this.inputElement.addEventListener('input', this._onInput.bind(this));
+      this.inputElement.addEventListener('keydown', this._preventRichTextFormatting.bind(this));
+
       // Never stop being different, IE.
       this.inputElement.addEventListener('textinput', this._onInput.bind(this));
     },
@@ -109,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         pastedText = event.clipboardData.getData('text/plain');
       }
       // Allow the pasted text and update the labels.
-      this.inputElement.textContent = pastedText;
+      document.execCommand('insertText', true, pastedText);
       this._onInput();
       event.preventDefault();
     },
@@ -118,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * Called when the element is focused. Forwards focus to the input element.
      */
     _onFocus: function() {
-      if (!this.disabled && !this._shiftTabPressed){
+      if (!this.disabled && !this.__shiftTabPressed){
         this.inputElement.focus();
       }
     },
@@ -130,12 +132,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     _onShiftTab: function(event) {
       var oldTabIndex = this.getAttribute('tabindex');
-      this._shiftTabPressed = true;
+      this.__shiftTabPressed = true;
       this.setAttribute('tabindex', '-1');
       this.async(function() {
         this.setAttribute('tabindex', oldTabIndex);
-        this._shiftTabPressed = false;
+        this.__shiftTabPressed = false;
       }, 1);
+    },
+
+    /**
+     * Called on keydown, to prevent rich formatting of the input.
+     */
+    _preventRichTextFormatting: function(event) {
+      // Prevent Ctrl+B and Ctrl+I for bolding and italics.
+      if (!event.ctrlKey && !event.metaKey)
+        return;
+
+      if (event.keyCode === 66 /* b */ || event.keyCode === 73 /* i */) {
+        event.preventDefault();
+      }
     },
 
     /**
@@ -167,9 +182,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     _computeUnderlineClass: function(focused) {
       return focused ? 'is-highlighted' : '';
-    },
+    }
   };
 
   Polymer.PaperTextFieldBehavior = [Polymer.IronControlState,
+                                    Polymer.IronA11yKeysBehavior,
                                     Polymer.PaperTextFieldBehaviorImpl];
 </script>
