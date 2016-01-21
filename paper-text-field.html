@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="paper-content-editable-behavior.html">
 <link rel="import" href="paper-text-field-shared-styles.html">
 <link rel="import" href="paper-text-field-behavior.html">
 
@@ -71,7 +72,8 @@ Custom property | Description | Default
     },
 
     behaviors: [
-      Polymer.PaperTextFieldBehavior
+      Polymer.PaperTextFieldBehavior,
+      Polymer.PaperContentEditableBehavior,
     ]
   });
 </script>

@@ -12,6 +12,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
 
 <script>
+  /**
+   * Use `Polymer.PaperTextFieldBehavior` to implement a paper-text-field like
+   * input, that controls a floating UI label.
+
+   * @polymerBehavior Polymer.PaperTextFieldBehavior
+   */
+
   Polymer.PaperTextFieldBehaviorImpl = {
     properties: {
       /**
@@ -62,6 +69,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       return this.$.input;
     },
 
+    /**
+     * Sets the value of the input element.
+     */
+    set inputElementValue(value) {
+      // The input element can be either a <div contenteditable> or an <input>
+      if (this.inputElement.contentEditable)
+        this.inputElement.textContent = value;
+      else
+        this.inputElement.value = value;
+    },
+
+    /**
+     * Gets the value of the input element.
+     */
+    get inputElementValue() {
+      // The input element can be either a <div contenteditable> or an <input>
+      return this.inputElement.contentEditable ?
+          this.inputElement.textContent : this.inputElement.value;
+    },
+
     listeners: {
       'focus': '_onFocus'
     },
@@ -75,45 +102,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.value || this.alwaysFloatLabel)
         this._onInput();
 
-      this._setUpListeners();
-    },
-
-    _setUpListeners: function() {
-      this.inputElement.addEventListener('paste', this._onPaste.bind(this));
-      this.inputElement.addEventListener('input', this._onInput.bind(this));
-      this.inputElement.addEventListener('keydown', this._preventRichTextFormatting.bind(this));
-
-      // Never stop being different, IE.
-      this.inputElement.addEventListener('textinput', this._onInput.bind(this));
+      if (this._setUpListeners)
+        this._setUpListeners();
     },
 
     /**
      * Called when the element is updated because of user interaction.
      */
     _onInput: function() {
-      this.value = this.inputElement.textContent;
+      this.value = this.inputElementValue;
 
       if (this.value || this.value === 0 || this.value === false) {
         this._setHasContent(true);
       } else {
         this._setHasContent(false);
       }
-    },
-
-    /**
-     * Called after a paste event inside the input element.
-     */
-    _onPaste: function(event) {
-      var pastedText = undefined;
-      if (window.clipboardData && window.clipboardData.getData) { // IE
-        pastedText = window.clipboardData.getData('Text');
-      } else if (event.clipboardData && event.clipboardData.getData) {
-        pastedText = event.clipboardData.getData('text/plain');
-      }
-      // Allow the pasted text and update the labels.
-      document.execCommand('insertText', true, pastedText);
-      this._onInput();
-      event.preventDefault();
     },
 
     /**
@@ -141,25 +144,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     /**
-     * Called on keydown, to prevent rich formatting of the input.
-     */
-    _preventRichTextFormatting: function(event) {
-      // Prevent Ctrl+B and Ctrl+I for bolding and italics.
-      if (!event.ctrlKey && !event.metaKey)
-        return;
-
-      if (event.keyCode === 66 /* b */ || event.keyCode === 73 /* i */) {
-        event.preventDefault();
-      }
-    },
-
-    /**
      * Called when the element is programmatically updated.
      */
     _valueChanged: function() {
       // Only update if it's actually different.
-      if (this.inputElement && this.inputElement.textContent !== this.value) {
-        this.inputElement.textContent = this.value;
+      if (this.inputElement && this.inputElementValue !== this.value) {
+        this.inputElementValue = this.value;
       }
     },
 
