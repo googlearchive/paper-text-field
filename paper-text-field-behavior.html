@@ -70,23 +70,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     /**
-     * Sets the value of the input element.
+     * Sets the value of the input element. Assumes the element is a
+     * <div contenteditable>; if it isn't, override this method in the element
+     * implementing this behavior.
      */
     set inputElementValue(value) {
-      // The input element can be either a <div contenteditable> or an <input>
-      if (this.inputElement.contentEditable)
-        this.inputElement.textContent = value;
-      else
-        this.inputElement.value = value;
+      this.inputElement.textContent = value;
     },
 
     /**
-     * Gets the value of the input element.
+     * Gets the value of the input element. Assumes the element is a
+     * <div contenteditable>; if it isn't, override this method in the element
+     * implementing this behavior.
      */
     get inputElementValue() {
-      // The input element can be either a <div contenteditable> or an <input>
-      return this.inputElement.contentEditable ?
-          this.inputElement.textContent : this.inputElement.value;
+      return this.inputElement.textContent;
     },
 
     listeners: {
