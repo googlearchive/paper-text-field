@@ -153,7 +153,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // TODO(noms):  When inheritance is available, investigate if these could
     // become private methods.
-    _computeLabelClass: function(noFloatLabel, alwaysFloatLabel, focused, hasContent) {
+    _computeLabelClass: function(noFloatLabel, alwaysFloatLabel, hasContent) {
       var cls = '';
       if (noFloatLabel === true) {
         return hasContent ? 'label-is-hidden' : '';
@@ -161,9 +161,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       if (hasContent || alwaysFloatLabel === true) {
         cls += ' label-is-floating';
-        if (focused) {
-          cls += " label-is-highlighted";
-        }
       }
       return cls;
     },

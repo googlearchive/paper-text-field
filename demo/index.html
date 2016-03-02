@@ -23,6 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../paper-text-field.html">
   <link rel="import" href="../paper-password-field.html">
   <link rel="import" href="../../paper-styles/color.html">
+  <link rel="import" href="../../paper-input/paper-input.html">
 
 </head>
 
@@ -45,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-text-field label="text input"></paper-text-field>
         <paper-password-field label="password"></paper-password-field>
         <paper-text-field label="pre-filled" value="batman"></paper-text-field>
-        <paper-text-field label="disabled input" disabled></paper-text-field>
+        <paper-text-field label="disabled input" value="batman" disabled></paper-text-field>
       </template>
     </demo-snippet>
 
@@ -74,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </style>
       <template>
         <paper-text-field label="custom colors and input" class="fancy"></paper-text-field>
-        <paper-text-field label="non-focusabled, read-only like input" class="read-only" disabled></paper-text-field>
+        <paper-text-field label="non-focusabled, read-only like input" class="read-only" no-float-label disabled></paper-text-field>
       </template>
     </demo-snippet>
 

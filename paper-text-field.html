@@ -43,34 +43,34 @@ Custom property | Description | Default
 -->
 
 <dom-module id="paper-text-field">
+  <style include="paper-text-field-shared-styles">
+  </style>
   <style>
     /* Prevent new lines from being entered or pasted */
     #input {
-        white-space: nowrap;
-        overflow: hidden;
+      min-height: 24px; /* FF doesn't seem to have a default */
+      z-index: 1;
+      white-space: nowrap;
+      overflow: hidden;
     }
-    #input br {
-        display: none;
+
+    /* The ::content rule is needed because in the shady DOM, the
+    brs are added by the browser and not style-scoped correctly. */
+    #input br, #input ::content br  {
+      display: none;
     }
-    #input * {
-        display: inline;
-        white-space: nowrap;
+
+    #input *, #input ::content * {
+      display: inline;
+      white-space: nowrap;
     }
   </style>
   <template>
-    <style include="paper-text-field-shared-styles"></style>
 
-    <div class="floated-label-placeholder" hidden$="[[noFloatLabel]]">&nbsp;</div>
-
-    <div class="input-content">
+    <div class="container">
       <label hidden$="[[!label]]"
-             class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,focused,hasContent)]]">[[label]]</label>
+          class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,hasContent)]]">[[label]]</label>
       <div id="input" contenteditable="true" tabindex="-1"></div>
-    </div>
-
-    <div class$="underline [[_computeUnderlineClass(focused)]]">
-      <div class="unfocused-line"></div>
-      <div class="focused-line"></div>
     </div>
 
   </template>
@@ -117,7 +117,6 @@ Custom property | Description | Default
       // Allow the pasted text and update the labels.
       document.execCommand('insertText', true, pastedText);
       this._onInput();
-      event.preventDefault();
     },
 
     /**

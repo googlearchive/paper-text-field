@@ -17,8 +17,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style>
       :host {
-        display: block;
-        padding: 8px 0;
+        display: inline-block;
+        width: 300px;
+        max-width: 100%;
       }
 
       [hidden] {
@@ -30,14 +31,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         opacity: var(--paper-text-field-disabled-opacity, 0.33);
       }
 
-      /* Restrict div contenteditable */
-      #input {
-        min-height: 24px; /* FF doesn't seem to have a default */
-        z-index: 1;
+      .container {
+        box-sizing: border-box;
+        position: relative;
+        width: 100%;
+        display: inline-block;
+        margin: 0;
+        padding: 8px 0;
+      }
 
-        /* Force single line */
-        white-space: nowrap;
-        overflow: hidden;
+      #input {
+        position: relative; /* to make a stacking context */
+        outline: none;
+        box-shadow: none;
+        border: none;
+        border-bottom: 1px solid var(--paper-text-field-color, --secondary-text-color);
+        margin: 0;
+        padding: 8px 0 0 0;
+        width: 100%;
+        text-align: inherit;
+        background: 0 0;
+        color: var(--paper-text-field-input-color, --primary-text-color);
+        @apply(--paper-font-subhead);
       }
 
       /* We manage the focus UI separately */
@@ -45,118 +60,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         outline: none;
       }
 
-      .floated-label-placeholder {
-        @apply(--paper-font-caption);
-      }
-
-      /*****************************
-       * Underline
-       ******************************/
-      .underline {
-        position: relative;
-      }
-
-      .focused-line {
-        height: 2px;
-
-        transform-origin: center center;
-        -webkit-transform-origin: center center;
-        transform: scale3d(0,1,1);
-        -webkit-transform: scale3d(0,1,1);
-
-        background: var(--paper-text-field-focus-color, --primary-color);
-
-        @apply(--layout-fit);
-      }
-
-      .underline.is-highlighted .focused-line {
-        -webkit-transform: none;
-        transform: none;
-        -webkit-transition: -webkit-transform 0.25s;
-        transition: transform 0.25s;
-
-        @apply(--paper-transition-easing);
-      }
-
-      .unfocused-line {
-        height: 1px;
-        background: var(--paper-text-field-color, --secondary-text-color);
-
-        @apply(--layout-fit);
-      }
-
-      :host([disabled]) .unfocused-line {
-        border-bottom: var(--paper-text-field-disabled-underline, 1px dashed);
-        border-color: var(--paper-text-field-color, --secondary-text-color);
-        background: transparent;
-      }
-
-      /*****************************
-       * Input
-       ******************************/
-      .input-content {
-        position: relative;
-        @apply(--layout-horizontal);
-        @apply(--layout-end);
-      }
-
-      .input-content #input {
-        position: relative; /* to make a stacking context */
-        outline: none;
-        box-shadow: none;
+      :host[no-float-label] #input {
         padding: 0;
-        width: 100%;
-        background: transparent;
-        border: none;
-        color: var(--paper-text-field-input-color, --primary-text-color);
-        -webkit-appearance: none;
-        text-align: inherit;
-
-        @apply(--paper-font-subhead);
       }
 
-      /*****************************
-       * Label
-       ******************************/
-      .input-content label  {
+      label {
         position: absolute;
-        top: 0;
-        right: 0;
+        bottom: 0;
         left: 0;
-        font: inherit;
-        color: var(--paper-text-field-color, --secondary-text-color);
+        right: 0;
+        top: 16px;
 
+        pointer-events: none;
+
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: left;
+        transition-duration: .2s;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
+
+        color: var(--paper-text-field-color, --secondary-text-color);
         @apply(--paper-font-common-nowrap);
         @apply(--paper-font-subhead);
+
+        transition-duration: .2s;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
       }
 
-      .input-content label.label-is-floating {
-        -webkit-transform: translateY(-75%) scale(0.75);
-        transform: translateY(-75%) scale(0.75);
-        -webkit-transition: -webkit-transform 0.25s;
-        transition: transform 0.25s;
-
-        -webkit-transform-origin: left top;
-        transform-origin: left top;
-
-        /* Since we scale to 75/100 of the size, we actually have 100/75 of the
-        original space now available */
-        width: 133%;
-
-        @apply(--paper-transition-easing);
+      :host([no-float-label]) label {
+        top: 8px;
       }
 
-      :host-context([dir="rtl"]) .input-content label.label-is-floating {
-        -webkit-transform-origin: right top;
-        transform-origin: right top;
+      label.label-is-floating {
+        font-size: 12px;
+        top: 0px;
+        visibility: visible;
       }
 
-      .input-content label.label-is-highlighted {
+      label.label-is-hidden {
+        display: none;
+      }
+
+      :host([focused]) label.label-is-floating {
         color: var(--paper-text-field-focus-color, --primary-color);
       }
 
-      .input-content label.label-is-hidden {
+      :host([focused]) label:after {
+        left: 0;
+        visibility: visible;
+        width: 100%;
+      }
+
+      /* The focused underline */
+      :host label:after {
+        background-color: var(--paper-text-field-focus-color, --primary-color);
+        bottom: 8px;
+        content: '';
+        height: 2px;
+        left: 45%;
+        position: absolute;
+        transition-duration: .2s;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
         visibility: hidden;
+        width: 8px;
       }
     </style>
 </dom-module>
