@@ -84,10 +84,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     suite('pasting', function(done) {
+      function ensureDocumentHasFocus() {
+        window.top && window.top.focus();
+      }
+
       test('pasting plain text', function(done) {
         input = fixture('basic');
 
+        // In FF, the tests steal focus from the window, which means we can't paste.
+        ensureDocumentHasFocus();
         MockInteractions.focus(input);
+
         var pasteEvent = new CustomEvent('paste');
         pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
         input.inputElement.dispatchEvent(pasteEvent);
@@ -103,7 +110,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('pasting emoji', function(done) {
         input = fixture('basic');
 
+        // In FF, the tests steal focus from the window, which means we can't paste.
+        ensureDocumentHasFocus();
         MockInteractions.focus(input);
+
         var pasteEvent = new CustomEvent('paste');
         pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
         input.inputElement.dispatchEvent(pasteEvent);
@@ -121,7 +131,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Note: this test is kind of moot, since pasting a bold thing actually
         // creates a text/html attribute, and text/plain is still the plain text
         // but you know. Sanity test or something.
+
+        // In FF, the tests steal focus from the window, which means we can't paste.
+        ensureDocumentHasFocus();
         MockInteractions.focus(input);
+
         var pasteEvent = new CustomEvent('paste');
         pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
         input.inputElement.dispatchEvent(pasteEvent);

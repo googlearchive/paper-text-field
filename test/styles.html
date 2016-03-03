@@ -110,10 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.equal(window.getComputedStyle(label, ':after').visibility,
             'hidden');
 
-        MockInteractions.focus(input.$.input);
-
-        // Wait for the animation to finish
-        setTimeout(function() {
+        var onTransitionEnd = function() {
           assert.isTrue(input.focused);
 
           // Should be highlighted.
@@ -122,8 +119,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               'rgb(63, 81, 181)');
           assert.equal(window.getComputedStyle(label, ':after').visibility,
               'visible');
+          // When the test cleans up, it will de-focus the input, which has another
+          // CSS transion. We don't care about that one.
+          input.removeEventListener('transitionend', onTransitionEnd);
           done();
-        }, 200);
+        }
+
+        // Wait for the animation to finish
+        input.addEventListener('transitionend', onTransitionEnd);
+        MockInteractions.focus(input.$.input);
       });
     });
   </script>
