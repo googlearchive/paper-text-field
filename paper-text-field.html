@@ -115,7 +115,7 @@ Custom property | Description | Default
         pastedText = event.clipboardData.getData('text/plain');
       }
       // Allow the pasted text and update the labels.
-      document.execCommand('insertText', true, pastedText);
+      document.execCommand('insertText', false, pastedText);
       this._onInput();
     },
 
