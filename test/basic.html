@@ -96,7 +96,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         MockInteractions.focus(input);
 
         var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
+        window.clipboardData = pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
         input.inputElement.dispatchEvent(pasteEvent);
 
         Polymer.Base.async(function(){
@@ -115,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         MockInteractions.focus(input);
 
         var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
+        window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
         input.inputElement.dispatchEvent(pasteEvent);
 
         Polymer.Base.async(function(){
@@ -137,7 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         MockInteractions.focus(input);
 
         var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
+        window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
         input.inputElement.dispatchEvent(pasteEvent);
 
         Polymer.Base.async(function() {
