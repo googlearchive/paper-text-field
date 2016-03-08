@@ -41,6 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       #input {
+        @apply(--paper-font-subhead);
         position: relative; /* to make a stacking context */
         outline: none;
         box-shadow: none;
@@ -49,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0;
         padding: 12px 0 0 0;
         width: 100%;
-        @apply(--paper-font-subhead);
         text-align: inherit;
         line-height: inherit;
         background: 0 0;
@@ -66,11 +66,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       label {
+        @apply(--paper-font-common-nowrap);
+        @apply(--paper-font-subhead);
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
-        top: 16px;
+        top: 18px;
 
         pointer-events: none;
 
@@ -83,8 +85,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         transition-timing-function: cubic-bezier(.4,0,.2,1);
 
         color: var(--paper-text-field-color, --secondary-text-color);
-        @apply(--paper-font-common-nowrap);
-        @apply(--paper-font-subhead);
       }
 
       :host([no-float-label]) label {

@@ -109,15 +109,27 @@ Custom property | Description | Default
      */
     _onPaste: function(event) {
       var pastedText;
+
       if (window.clipboardData && window.clipboardData.getData) { // IE
         pastedText = window.clipboardData.getData('Text');
       } else if (event.clipboardData && event.clipboardData.getData) {
         pastedText = event.clipboardData.getData('text/plain');
       }
+
+      // IE10 and 11 don't support `insertText`, but support `paste`, which
+      // doesn't persist formatting. Modern browsers that support `insertText`
+      // also persist the formatting on `paste`, so they should use that.
+      if (document.queryCommandSupported('insertText')) {
+        document.execCommand('insertText', false, pastedText);
+      } else if (document.queryCommandSupported('paste')) {
+        document.execCommand('paste', false, pastedText);
+      } else {
+        return;
+      }
+
       // Allow the pasted text and update the labels.
-      document.execCommand('insertText', false, pastedText);
-      this._onInput();
       event.preventDefault();
+      this._onInput();
     },
 
     /**

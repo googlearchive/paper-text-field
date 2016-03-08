@@ -88,7 +88,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.top && window.top.focus();
       }
 
+      // On IE10 and IE11 pasting pops up an "Allow access" dialog, which
+      // we can't bypass (and means we can't run the tests).
+      var pasteRequiresUserInteraction;
+      setup(function() {
+        pasteRequiresUserInteraction = !document.queryCommandSupported('insertText');;
+      });
+
       test('pasting plain text', function(done) {
+        if (pasteRequiresUserInteraction) {
+          done();
+          return;
+        }
+
         input = fixture('basic');
 
         // In FF, the tests steal focus from the window, which means we can't paste.
@@ -104,10 +116,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
           done();
         }, 1);
+
       });
 
       // A potentially relevant test, because you know, unicode.
       test('pasting emoji', function(done) {
+        if (pasteRequiresUserInteraction) {
+          done();
+          return;
+        }
+
         input = fixture('basic');
 
         // In FF, the tests steal focus from the window, which means we can't paste.
@@ -119,6 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.inputElement.dispatchEvent(pasteEvent);
 
         Polymer.Base.async(function(){
+
           assert.equal(input.value, '🌵', 'value is correct');
           assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
           done();
@@ -126,6 +145,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('pasting does not try to style', function(done) {
+        if (pasteRequiresUserInteraction) {
+          done();
+          return;
+        }
+
         input = fixture('basic');
 
         // Note: this test is kind of moot, since pasting a bold thing actually
