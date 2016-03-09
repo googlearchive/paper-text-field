@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 </head>
 <body>
-  <test-fixture id="label">
+  <test-fixture id="just-label">
     <template>
       <paper-text-field label="batman"></paper-text-field>
     </template>
@@ -59,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var input;
 
       test('label floats after user input', function() {
-        var input = fixture('label');
+        var input = fixture('just-label');
         var label = Polymer.dom(input.root).querySelector('label');
         assert.isFalse(label.classList.contains('label-is-floating'), 'label is not floating');
 
@@ -99,21 +99,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     suite('focused styles', function() {
-      test('underline and label are colored when input is focused', function(done) {
+      test('label is colored when input is focused', function(done) {
         var input = fixture('label-and-value');
-        var line = Polymer.dom(input.root).querySelector('.underline');
         var label = Polymer.dom(input.root).querySelector('label');
 
-        assert.isFalse(line.classList.contains('is-highlighted'), 'line is not highlighted when input is not focused');
-        assert.isFalse(label.classList.contains('label-is-highlighted'), 'label is not highlighted when input is not focused');
+        assert.isFalse(input.focused);
 
-        MockInteractions.focus(input.$.input);
+        // Nothing is coloured and the focus underline isn't showing
+        assert.equal(window.getComputedStyle(label).color, 'rgb(115, 115, 115)');
+        assert.equal(window.getComputedStyle(label, ':after').visibility,
+            'hidden');
 
-        requestAnimationFrame(function() {
-          assert.isTrue(line.classList.contains('is-highlighted'), 'line is highlighted when input is focused');
-          assert.isTrue(label.classList.contains('label-is-highlighted'), 'label is highlighted when input is focused');
+        var onTransitionEnd = function() {
+          assert.isTrue(input.focused);
+
+          // Should be highlighted.
+          assert.equal(window.getComputedStyle(label).color, 'rgb(63, 81, 181)');
+          assert.equal(window.getComputedStyle(label, ':after').backgroundColor,
+              'rgb(63, 81, 181)');
+          assert.equal(window.getComputedStyle(label, ':after').visibility,
+              'visible');
+          // When the test cleans up, it will de-focus the input, which has another
+          // CSS transion. We don't care about that one.
+          input.removeEventListener('transitionend', onTransitionEnd);
           done();
-        });
+        }
+
+        // Wait for the animation to finish
+        input.addEventListener('transitionend', onTransitionEnd);
+        MockInteractions.focus(input.$.input);
       });
     });
   </script>

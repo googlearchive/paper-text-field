@@ -83,56 +83,76 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     });
 
-    suite('pasting', function(done) {
-      test('pasting plain text', function(done) {
-        input = fixture('basic');
+    // On IE10 and IE11 pasting pops up an "Allow access" dialog, which
+    // we can't bypass (and means we can't run the tests).
+    if (document.queryCommandSupported('insertText')) {
+      suite('pasting', function(done) {
+        function ensureDocumentHasFocus() {
+          window.top && window.top.focus();
+        }
 
-        MockInteractions.focus(input);
-        var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
-        input.inputElement.dispatchEvent(pasteEvent);
+        test('pasting plain text', function(done) {
+          input = fixture('basic');
 
-        Polymer.Base.async(function(){
-          assert.equal(input.value, 'batman', 'value is correct');
-          assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-          done();
-        }, 1);
+          // In FF, the tests steal focus from the window, which means we can't paste.
+          ensureDocumentHasFocus();
+          MockInteractions.focus(input);
+
+          var pasteEvent = new CustomEvent('paste');
+          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
+          input.inputElement.dispatchEvent(pasteEvent);
+
+          Polymer.Base.async(function(){
+            assert.equal(input.value, 'batman', 'value is correct');
+            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+            done();
+          }, 1);
+
+        });
+
+        // A potentially relevant test, because you know, unicode.
+        test('pasting emoji', function(done) {
+          input = fixture('basic');
+
+          // In FF, the tests steal focus from the window, which means we can't paste.
+          ensureDocumentHasFocus();
+          MockInteractions.focus(input);
+
+          var pasteEvent = new CustomEvent('paste');
+          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
+          input.inputElement.dispatchEvent(pasteEvent);
+
+          Polymer.Base.async(function(){
+
+            assert.equal(input.value, '🌵', 'value is correct');
+            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+            done();
+          }, 1);
+        });
+
+        test('pasting does not try to style', function(done) {
+          input = fixture('basic');
+
+          // Note: this test is kind of moot, since pasting a bold thing actually
+          // creates a text/html attribute, and text/plain is still the plain text
+          // but you know. Sanity test or something.
+
+          // In FF, the tests steal focus from the window, which means we can't paste.
+          ensureDocumentHasFocus();
+          MockInteractions.focus(input);
+
+          var pasteEvent = new CustomEvent('paste');
+          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
+          input.inputElement.dispatchEvent(pasteEvent);
+
+          Polymer.Base.async(function() {
+            assert.equal(input.value, '<b>batman</b>', 'value is correct');
+            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+            done();
+          }, 1);
+        });
       });
-
-      // A potentially relevant test, because you know, unicode.
-      test('pasting emoji', function(done) {
-        input = fixture('basic');
-
-        MockInteractions.focus(input);
-        var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
-        input.inputElement.dispatchEvent(pasteEvent);
-
-        Polymer.Base.async(function(){
-          assert.equal(input.value, '🌵', 'value is correct');
-          assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-          done();
-        }, 1);
-      });
-
-      test('pasting does not try to style', function(done) {
-        input = fixture('basic');
-
-        // Note: this test is kind of moot, since pasting a bold thing actually
-        // creates a text/html attribute, and text/plain is still the plain text
-        // but you know. Sanity test or something.
-        MockInteractions.focus(input);
-        var pasteEvent = new CustomEvent('paste');
-        pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
-        input.inputElement.dispatchEvent(pasteEvent);
-
-        Polymer.Base.async(function() {
-          assert.equal(input.value, '<b>batman</b>', 'value is correct');
-          assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-          done();
-        }, 1);
-      });
-    });
+    }
 
     suite('focus/blur events', function() {
       var input;

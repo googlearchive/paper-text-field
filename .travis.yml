@@ -15,7 +15,8 @@ before_script:
   - bower install
   - polylint
 script:
-  - xvfb-run wct
+  - xvfb-run wct -l firefox
+  - xvfb-run wct -l chrome
   - "if [ \"${TRAVIS_PULL_REQUEST}\" = \"false\" ]; then wct -s 'default'; fi"
 env:
   global:
