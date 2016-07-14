@@ -43,29 +43,27 @@ Custom property | Description | Default
 -->
 
 <dom-module id="paper-text-field">
-  <style include="paper-text-field-shared-styles">
-  </style>
-  <style>
-    /* Prevent new lines from being entered or pasted */
-    #input {
-      min-height: 20px; /* FF doesn't seem to have a default */
-      z-index: 1;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    /* The ::content rule is needed because in the shady DOM, the
-    brs are added by the browser and not style-scoped correctly. */
-    #input br, #input ::content br  {
-      display: none;
-    }
-
-    #input *, #input ::content * {
-      display: inline;
-      white-space: nowrap;
-    }
-  </style>
   <template>
+    <style include="paper-text-field-shared-styles">
+      /* Prevent new lines from being entered or pasted */
+      #input {
+        min-height: 20px; /* FF doesn't seem to have a default */
+        z-index: 1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      /* The ::content rule is needed because in the shady DOM, the
+      brs are added by the browser and not style-scoped correctly. */
+      #input br, #input ::content br  {
+        display: none;
+      }
+
+      #input *, #input ::content * {
+        display: inline;
+        white-space: nowrap;
+      }
+    </style>
 
     <div class="container">
       <label hidden$="[[!label]]"
