@@ -8,18 +8,15 @@ addons:
     packages:
       - google-chrome-stable
 before_script:
-  - npm install -g bower polylint web-component-tester
-  - bower install
-  - polylint
+  - npm install -g bower polymer-cli@next
+  - polymer install --variants
 script:
-  - xvfb-run wct -l firefox
-  - xvfb-run wct -l chrome
-  - 'if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then wct -s ''default''; fi'
+  - xvfb-run polymer test -l firefox
+  - xvfb-run polymer test -l chrome
+  - 'if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s ''default''; fi'
 env:
   global:
-    - secure: >-
-        P7qK3Y+PqiGbMOdYNprh/MVtO0KsP2HAzoLSItUst32UM9bScD1dwH837Cv4PhgnJ/1fmvISu1Eh2X+ZhzlS6ruFVA4HOlcmAq5G8dQf3wOe+yxn3ZrRGxNpc5PmzrAdEl0PQspFfCIdNCSHG4LrN6mY/OnCmCVN0zUSqDjh7BJZvlOSUsZYY4srrw0IIfiRhxKcJ3EjqabxeWTqmRUIAjE04AWXqLU8ONTCLaHAU1Rhyv1917l+nfuKgXz7I8g3JR+z+g58g4KOsa+Kf3uqp2bC8k9Y0AvlLqV743mM+XIpeYZAvRPLgodMPN9/jxA+vcaPpGEqg1LHM3GDMtYQVytvo5fr3bEPlMCrOYl1WnyPw5M5o2bd2xGEuL/LxrAbCwf+mnqZwAKggd0TWp8WC87qMCnTSiLGd/BX0TLzkw0zrSSRffb1K8XC4a+KQQn2HUmGhHB37F8zw3r2xVgVbMGIRujc6NUxWCvnxi3YwwizWwH8xaqF1IXefSOCWv1V84lLDR7pma9pA6bgH9m+u8+UQhYi9YGv8QL4Rv8tv0Gjzib+hfWGb/fgE1FNJqSzr9TEXyjHwvs2qBPamfSX6CI+dxk8Uyf5y9iOTw7JruRUit30TvR1euK3RT28NGBOTp7EsjlK1nvEbkXIZAqkj2mDH73jJ2aEhU+27dhb0d8=
-    - secure: >-
-        b3bWXgJKYuzRj+PXyO+GlDxfgtmTtEhS0KpV9EP+bxCj9vHP4Z0kCl1p+2QR6evz8j/C7gSFJ0kkWLCbUlYqp6CT0HZDz0TfHknWJXSx4F+O3MI1F7aBQr8JxrHTxHQcA7TM1yUYL5iS8bCBRP6C2mT2TBBEKy32pWYlZbNsP8tldrIyhwj5hHO/C8FO0fuOv3b+cayQ5AUXFc27dzIuhWChgSiBj/yNemwE51h+Jim74eIEC5neFVAC3ysU44UH9R1XTo/DizU5tfAPeeBmSJY00j6fWZ67BQr2HB9YSDcm/fNkGoOjFlyJGhG29FDhGskU6elH9ZI/94MbTnBLeU/XCVG1w3PHwOTlLrb6lCYADuqvUyj41iQc10kTH4a4+kbHp6sMqi7oEiPpGU/RByLyZVZvJGIlmeAnvyf26roaKwseHNh5kAYhHSU13FjqsCn/+yKnpcooZJlQtYaf30w3ZH+ja8q90KAf+MGrIncR09hbq4G7WmO0q6yug4LAsmphZbTiXs4KSAe8OJrBq+46ubi3z9tTZEBH1ZwOoEOiD+l/fHP10RfuC6Xtynw99lw93JFAbzckdK/McGBL54zAL6/dlbAT/mVv6WwLD4CKXPVzsVJOqk7AutnUemCl8LOFtYDoJwbreahnqxJKjm2R9YFkhBofVskrapbAiQo=
+    - secure: P7qK3Y+PqiGbMOdYNprh/MVtO0KsP2HAzoLSItUst32UM9bScD1dwH837Cv4PhgnJ/1fmvISu1Eh2X+ZhzlS6ruFVA4HOlcmAq5G8dQf3wOe+yxn3ZrRGxNpc5PmzrAdEl0PQspFfCIdNCSHG4LrN6mY/OnCmCVN0zUSqDjh7BJZvlOSUsZYY4srrw0IIfiRhxKcJ3EjqabxeWTqmRUIAjE04AWXqLU8ONTCLaHAU1Rhyv1917l+nfuKgXz7I8g3JR+z+g58g4KOsa+Kf3uqp2bC8k9Y0AvlLqV743mM+XIpeYZAvRPLgodMPN9/jxA+vcaPpGEqg1LHM3GDMtYQVytvo5fr3bEPlMCrOYl1WnyPw5M5o2bd2xGEuL/LxrAbCwf+mnqZwAKggd0TWp8WC87qMCnTSiLGd/BX0TLzkw0zrSSRffb1K8XC4a+KQQn2HUmGhHB37F8zw3r2xVgVbMGIRujc6NUxWCvnxi3YwwizWwH8xaqF1IXefSOCWv1V84lLDR7pma9pA6bgH9m+u8+UQhYi9YGv8QL4Rv8tv0Gjzib+hfWGb/fgE1FNJqSzr9TEXyjHwvs2qBPamfSX6CI+dxk8Uyf5y9iOTw7JruRUit30TvR1euK3RT28NGBOTp7EsjlK1nvEbkXIZAqkj2mDH73jJ2aEhU+27dhb0d8=
+    - secure: b3bWXgJKYuzRj+PXyO+GlDxfgtmTtEhS0KpV9EP+bxCj9vHP4Z0kCl1p+2QR6evz8j/C7gSFJ0kkWLCbUlYqp6CT0HZDz0TfHknWJXSx4F+O3MI1F7aBQr8JxrHTxHQcA7TM1yUYL5iS8bCBRP6C2mT2TBBEKy32pWYlZbNsP8tldrIyhwj5hHO/C8FO0fuOv3b+cayQ5AUXFc27dzIuhWChgSiBj/yNemwE51h+Jim74eIEC5neFVAC3ysU44UH9R1XTo/DizU5tfAPeeBmSJY00j6fWZ67BQr2HB9YSDcm/fNkGoOjFlyJGhG29FDhGskU6elH9ZI/94MbTnBLeU/XCVG1w3PHwOTlLrb6lCYADuqvUyj41iQc10kTH4a4+kbHp6sMqi7oEiPpGU/RByLyZVZvJGIlmeAnvyf26roaKwseHNh5kAYhHSU13FjqsCn/+yKnpcooZJlQtYaf30w3ZH+ja8q90KAf+MGrIncR09hbq4G7WmO0q6yug4LAsmphZbTiXs4KSAe8OJrBq+46ubi3z9tTZEBH1ZwOoEOiD+l/fHP10RfuC6Xtynw99lw93JFAbzckdK/McGBL54zAL6/dlbAT/mVv6WwLD4CKXPVzsVJOqk7AutnUemCl8LOFtYDoJwbreahnqxJKjm2R9YFkhBofVskrapbAiQo=
 dist: trusty
 sudo: required
