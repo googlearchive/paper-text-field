@@ -11,7 +11,6 @@
     "input"
   ],
   "main": "paper-text-field.html",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git://github.com/PolymerElements/paper-text-field.git"
