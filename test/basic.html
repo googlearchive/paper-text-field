@@ -17,10 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../paper-text-field.html">
+  <script src="../../iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../paper-text-field.js"></script>
 
 </head>
 <body>
@@ -43,158 +43,160 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <script>
+  <script type="module">
+import '../paper-text-field.js';
+import { a11ySuite } from '../../../wct-browser-legacy/a11ySuite.js';
 
-    suite('basic', function() {
-      var input;
+suite('basic', function() {
+  var input;
 
-      function textContent() {
-        return input.inputElement.textContent;
-      }
+  function textContent() {
+    return input.inputElement.textContent;
+  }
 
-      test('setting the value updates the text content', function() {
-        input = fixture('basic');
-        input.value = 'batman';
-        assert.equal(input.value, textContent(), 'value equals to textContent');
-      });
+  test('setting the value updates the text content', function() {
+    input = fixture('basic');
+    input.value = 'batman';
+    assert.equal(input.value, textContent(), 'value equals to textContent');
+  });
 
-      test('setting the text content updates the value after _onInput()', function() {
-        input = fixture('basic');
-        input.$.textContent = 'batman';
-        input._onInput();
-        assert.equal(input.value, textContent(), 'value equals to textContent');
-      });
+  test('setting the text content updates the value after _onInput()', function() {
+    input = fixture('basic');
+    input.$.textContent = 'batman';
+    input._onInput();
+    assert.equal(input.value, textContent(), 'value equals to textContent');
+  });
 
-      test('changing the value triggers an event', function(done) {
-        input = fixture('basic');
-        var handler = sinon.spy();
-        input.addEventListener('value-changed', handler);
+  test('changing the value triggers an event', function(done) {
+    input = fixture('basic');
+    var handler = sinon.spy();
+    input.addEventListener('value-changed', handler);
 
-        Polymer.Base.async(function(){
-          expect(handler.callCount).to.be.equal(1);
-          done();
-        }, 1);
-        input.value = 'batman';
-      });
+    Polymer.Base.async(function(){
+      expect(handler.callCount).to.be.equal(1);
+      done();
+    }, 1);
+    input.value = 'batman';
+  });
 
-      test('preset value sets textContent', function() {
-        input = fixture('has-value');
-        assert.equal(input.value, 'batman');
-        assert.equal(input.value, textContent(), 'value equals to textContent');
-      });
-    });
+  test('preset value sets textContent', function() {
+    input = fixture('has-value');
+    assert.equal(input.value, 'batman');
+    assert.equal(input.value, textContent(), 'value equals to textContent');
+  });
+});
 
-    // On IE10 and IE11 pasting pops up an "Allow access" dialog, which
-    // we can't bypass (and means we can't run the tests).
-    if (document.queryCommandSupported('insertText')) {
-      suite('pasting', function(done) {
-        function ensureDocumentHasFocus() {
-          window.top && window.top.focus();
-        }
-
-        test('pasting plain text', function(done) {
-          input = fixture('basic');
-
-          // In FF, the tests steal focus from the window, which means we can't paste.
-          ensureDocumentHasFocus();
-          MockInteractions.focus(input);
-
-          var pasteEvent = new CustomEvent('paste');
-          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
-          input.inputElement.dispatchEvent(pasteEvent);
-
-          Polymer.Base.async(function(){
-            assert.equal(input.value, 'batman', 'value is correct');
-            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-            done();
-          }, 1);
-
-        });
-
-        // A potentially relevant test, because you know, unicode.
-        test('pasting emoji', function(done) {
-          input = fixture('basic');
-
-          // In FF, the tests steal focus from the window, which means we can't paste.
-          ensureDocumentHasFocus();
-          MockInteractions.focus(input);
-
-          var pasteEvent = new CustomEvent('paste');
-          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
-          input.inputElement.dispatchEvent(pasteEvent);
-
-          Polymer.Base.async(function(){
-
-            assert.equal(input.value, '🌵', 'value is correct');
-            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-            done();
-          }, 1);
-        });
-
-        test('pasting does not try to style', function(done) {
-          input = fixture('basic');
-
-          // Note: this test is kind of moot, since pasting a bold thing actually
-          // creates a text/html attribute, and text/plain is still the plain text
-          // but you know. Sanity test or something.
-
-          // In FF, the tests steal focus from the window, which means we can't paste.
-          ensureDocumentHasFocus();
-          MockInteractions.focus(input);
-
-          var pasteEvent = new CustomEvent('paste');
-          window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
-          input.inputElement.dispatchEvent(pasteEvent);
-
-          Polymer.Base.async(function() {
-            assert.equal(input.value, '<b>batman</b>', 'value is correct');
-            assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
-            done();
-          }, 1);
-        });
-      });
+// On IE10 and IE11 pasting pops up an "Allow access" dialog, which
+// we can't bypass (and means we can't run the tests).
+if (document.queryCommandSupported('insertText')) {
+  suite('pasting', function(done) {
+    function ensureDocumentHasFocus() {
+      window.top && window.top.focus();
     }
 
-    suite('focus/blur events', function() {
-      var input;
+    test('pasting plain text', function(done) {
+      input = fixture('basic');
 
-      setup(function() {
-        input = fixture('basic');
-      });
+      // In FF, the tests steal focus from the window, which means we can't paste.
+      ensureDocumentHasFocus();
+      MockInteractions.focus(input);
 
-      test('focus an input with tabindex', function(done) {
-        flush(function() {
-          MockInteractions.focus(input);
-          flush(function() {
-            assert.equal(input.shadowRoot ? input.shadowRoot.activeElement :
-                document.activeElement, input.inputElement);
-            done();
-          });
-        });
-      });
+      var pasteEvent = new CustomEvent('paste');
+      window.clipboardData = pasteEvent.clipboardData = { getData: function() { return 'batman'; } };
+      input.inputElement.dispatchEvent(pasteEvent);
 
-      test('focus/blur events fired on host element', function() {
-        var nFocusEvents = 0;
-        var nBlurEvents = 0;
-        input.addEventListener('focus', function(event) {
-          nFocusEvents += 1;
-          assert(input.focused, 'input is focused');
-          MockInteractions.blur(input.inputElement);
-        });
-        input.addEventListener('blur', function() {
-          nBlurEvents += 1;
-          assert(!input.focused, 'input is blurred');
-        });
-        MockInteractions.focus(input.inputElement);
-        assert.isTrue(nFocusEvents >= 1, 'focus event fired');
-        assert.isTrue(nBlurEvents >= 1, 'blur event fired');
-      });
+      Polymer.Base.async(function(){
+        assert.equal(input.value, 'batman', 'value is correct');
+        assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+        done();
+      }, 1);
+
     });
 
-    a11ySuite('basic');
-    a11ySuite('label');
-    a11ySuite('has-value');
-  </script>
+    // A potentially relevant test, because you know, unicode.
+    test('pasting emoji', function(done) {
+      input = fixture('basic');
+
+      // In FF, the tests steal focus from the window, which means we can't paste.
+      ensureDocumentHasFocus();
+      MockInteractions.focus(input);
+
+      var pasteEvent = new CustomEvent('paste');
+      window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '🌵'; } };
+      input.inputElement.dispatchEvent(pasteEvent);
+
+      Polymer.Base.async(function(){
+
+        assert.equal(input.value, '🌵', 'value is correct');
+        assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+        done();
+      }, 1);
+    });
+
+    test('pasting does not try to style', function(done) {
+      input = fixture('basic');
+
+      // Note: this test is kind of moot, since pasting a bold thing actually
+      // creates a text/html attribute, and text/plain is still the plain text
+      // but you know. Sanity test or something.
+
+      // In FF, the tests steal focus from the window, which means we can't paste.
+      ensureDocumentHasFocus();
+      MockInteractions.focus(input);
+
+      var pasteEvent = new CustomEvent('paste');
+      window.clipboardData = pasteEvent.clipboardData = { getData: function() { return '<b>batman</b>'; } };
+      input.inputElement.dispatchEvent(pasteEvent);
+
+      Polymer.Base.async(function() {
+        assert.equal(input.value, '<b>batman</b>', 'value is correct');
+        assert.equal(input.value, input.inputElement.textContent, 'value equals to textContent');
+        done();
+      }, 1);
+    });
+  });
+}
+
+suite('focus/blur events', function() {
+  var input;
+
+  setup(function() {
+    input = fixture('basic');
+  });
+
+  test('focus an input with tabindex', function(done) {
+    flush(function() {
+      MockInteractions.focus(input);
+      flush(function() {
+        assert.equal(input.shadowRoot ? input.shadowRoot.activeElement :
+            document.activeElement, input.inputElement);
+        done();
+      });
+    });
+  });
+
+  test('focus/blur events fired on host element', function() {
+    var nFocusEvents = 0;
+    var nBlurEvents = 0;
+    input.addEventListener('focus', function(event) {
+      nFocusEvents += 1;
+      assert(input.focused, 'input is focused');
+      MockInteractions.blur(input.inputElement);
+    });
+    input.addEventListener('blur', function() {
+      nBlurEvents += 1;
+      assert(!input.focused, 'input is blurred');
+    });
+    MockInteractions.focus(input.inputElement);
+    assert.isTrue(nFocusEvents >= 1, 'focus event fired');
+    assert.isTrue(nBlurEvents >= 1, 'blur event fired');
+  });
+});
+
+a11ySuite('basic');
+a11ySuite('label');
+a11ySuite('has-value');
+</script>
 
 </body>
 </html>

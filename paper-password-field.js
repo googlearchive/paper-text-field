@@ -1,4 +1,25 @@
-<!--
+import '../polymer/polymer.js';
+import './paper-text-field-shared-styles.js';
+import './paper-text-field-behavior.js';
+const $_documentContainer = document.createElement('div');
+$_documentContainer.setAttribute('style', 'display: none;');
+
+$_documentContainer.innerHTML = `<dom-module id="paper-password-field">
+  <!-- TODO(noms): When inheritance is available, inherit the template from
+    a base text-field -->
+  <template>
+    <style include="paper-text-field-shared-styles"></style>
+
+    <div class="container">
+      <label hidden\$="[[!label]]" class\$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,hasContent)]]">[[label]]</label>
+      <input id="input" type="password" tabindex="-1"></div>
+    
+    
+  </template>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer);
+/**
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -6,13 +27,8 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="paper-text-field-shared-styles.html">
-<link rel="import" href="paper-text-field-behavior.html">
-
-<!--
+*/
+/**
 Material design: [Text fields](https://www.google.com/design/spec/components/text-fields.html)
 
 `<paper-text-field>` is a single-line text field with Material Design styling.
@@ -39,46 +55,30 @@ Custom property | Description | Default
 @element paper-text-field
 @hero hero.svg
 @demo demo/index.html
--->
+*/
+/* TODO(noms): When inheritance is available, inherit the template from
+    a base text-field */
+Polymer({
+  is: 'paper-password-field',
 
-<dom-module id="paper-password-field">
-  <!-- TODO(noms): When inheritance is available, inherit the template from
-    a base text-field -->
-  <template>
-    <style include="paper-text-field-shared-styles"></style>
+  hostAttributes: {
+    'tabindex': 0,
+    'role': 'textbox'
+  },
 
-    <div class="container">
-      <label hidden$="[[!label]]"
-          class$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,hasContent)]]">[[label]]</label>
-      <input id="input" type="password" tabindex="-1"></div>
-    </div>
-    
-  </template>
-</dom-module>
+  behaviors: [
+    Polymer.PaperTextFieldBehavior
+  ],
 
-<script>
-  Polymer({
-    is: 'paper-password-field',
+  _setUpListeners: function() {
+    this.inputElement.addEventListener('input', this._onInput.bind(this));
+  },
 
-    hostAttributes: {
-      'tabindex': 0,
-      'role': 'textbox'
-    },
+  set inputElementValue(value) {
+    this.inputElement.value = value;
+  },
 
-    behaviors: [
-      Polymer.PaperTextFieldBehavior
-    ],
-
-    _setUpListeners: function() {
-      this.inputElement.addEventListener('input', this._onInput.bind(this));
-    },
-
-    set inputElementValue(value) {
-      this.inputElement.value = value;
-    },
-
-    get inputElementValue() {
-      return this.inputElement.value;
-    },
-  });
-</script>
+  get inputElementValue() {
+    return this.inputElement.value;
+  },
+});

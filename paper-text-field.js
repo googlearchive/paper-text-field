@@ -1,0 +1,132 @@
+import '../polymer/polymer.js';
+import '../iron-a11y-keys-behavior/iron-a11y-keys-behavior.js';
+import './paper-text-field-shared-styles.js';
+import './paper-text-field-behavior.js';
+/**
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+*/
+/**
+Material design: [Text fields](https://www.google.com/design/spec/components/text-fields.html)
+
+`<paper-text-field>` is a single-line text field with Material Design styling.
+Unlike `<paper-input>` it does not contain a native `<input>` field, so it cannot
+be used in native forms, or with any of the native `<input>` `type=...` attributes.
+
+    <paper-text-field label="Input label"></paper-text-field>
+
+See `Polymer.PaperTextFieldBehavior` for more API docs.
+
+### Styling
+
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----
+`--paper-text-field-color` | Label and underline color when the focus is not focused | `--secondary-text-color`
+`--paper-text-field-focus-color` | Label and underline color when the input is focused | `--primary-color`
+`--paper-text-field-input-color` | Input foreground text color | `--primary-text-color`
+`--paper-text-field-disabled-opacity` | Opacity of the element when disabled | `0.33`
+`--paper-text-field-disabled-underline` | Border style of the underline when disabled | `1px dashed`
+
+@group Paper Elements
+@element paper-text-field
+@hero hero.svg
+@demo demo/index.html
+*/
+Polymer({
+  _template: Polymer.html`
+    <style include="paper-text-field-shared-styles">
+      /* Prevent new lines from being entered or pasted */
+      #input {
+        min-height: 20px; /* FF doesn't seem to have a default */
+        z-index: 1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      /* The ::content rule is needed because in the shady DOM, the
+      brs are added by the browser and not style-scoped correctly. */
+      #input br, #input ::content br  {
+        display: none;
+      }
+
+      #input *, #input ::content * {
+        display: inline;
+        white-space: nowrap;
+      }
+    </style>
+
+    <div class="container">
+      <label hidden\$="[[!label]]" class\$="[[_computeLabelClass(noFloatLabel,alwaysFloatLabel,hasContent)]]">[[label]]</label>
+      <div id="input" contenteditable="true" tabindex="-1"></div>
+    </div>
+`,
+
+  is: 'paper-text-field',
+
+  hostAttributes: {
+    'tabindex': 0,
+    'role': 'textbox'
+  },
+
+  keyBindings: {
+    'meta+b:keydown': '_preventRichTextFormatting',
+    'meta+i:keydown': '_preventRichTextFormatting',
+    'ctrl+b:keydown': '_preventRichTextFormatting',
+    'ctrl+i:keydown': '_preventRichTextFormatting'
+  },
+
+  behaviors: [
+    Polymer.PaperTextFieldBehavior,
+  ],
+
+  _setUpListeners: function() {
+    this.inputElement.addEventListener('paste', this._onPaste.bind(this));
+    this.inputElement.addEventListener('input', this._onInput.bind(this));
+
+    // Never stop being different, IE.
+    this.inputElement.addEventListener('textinput', this._onInput.bind(this));
+  },
+
+  /**
+   * Called after a paste event inside the input element.
+   */
+  _onPaste: function(event) {
+    var pastedText;
+
+    if (window.clipboardData && window.clipboardData.getData) { // IE
+      pastedText = window.clipboardData.getData('Text');
+    } else if (event.clipboardData && event.clipboardData.getData) {
+      pastedText = event.clipboardData.getData('text/plain');
+    }
+
+    // IE10 and 11 don't support `insertText`, but support `paste`, which
+    // doesn't persist formatting. Modern browsers that support `insertText`
+    // also persist the formatting on `paste`, so they should use that.
+    if (document.queryCommandSupported('insertText')) {
+      document.execCommand('insertText', false, pastedText);
+    } else if (document.queryCommandSupported('paste')) {
+      document.execCommand('paste', false, pastedText);
+    } else {
+      return;
+    }
+
+    // Allow the pasted text and update the labels.
+    event.preventDefault();
+    this._onInput();
+  },
+
+  /**
+   * Called on keydown, to prevent rich formatting of the input.
+   */
+  _preventRichTextFormatting: function() {
+    // Prevent Ctrl+B and Ctrl+I for bolding and italics.
+    event.preventDefault();
+  }
+});
